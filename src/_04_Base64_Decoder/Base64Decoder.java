@@ -48,17 +48,54 @@ public class Base64Decoder {
 	//2. Complete this method so that it will take in a string that is 4 
 	//   characters long and return an array of 3 bytes (24 bits). The byte 
 	//   array should be the binary value of the encoded characters.
+	
+	//So, basically, this method is turning characters into Base64 values into bytes.
 	public static byte[] convert4CharsTo24Bits(String s){
 		char[] chars = s.toCharArray();
-		byte[] result = new byte[3];
+		byte[] results = new byte[3];
 		
+		results[0] = (byte) ((convertBase64Char(chars[0]) << 2) | (convertBase64Char(chars[1]) >> 4));
+		results[1] = (byte) ((convertBase64Char(chars[1]) << 4) | (convertBase64Char(chars[2]) >> 2));
+		results[2] = (byte) ((convertBase64Char(chars[2]) << 6) | (convertBase64Char(chars[3]) >> 0));
 		
-		return null;
+		/*
+		0011-0110; 0001-1001; 0010-1100; 0011-1111;
+		  11 0110    01;1001  - 10 11;00   11-1111;
+		1101-1001; 1001-1011; 0011-1111;
+		*/
+		for (int i = 0; i < results.length; i++) {
+		//	System.out.println(results[i]);
+		}
+		
+		return results;
 	}
 	
 	//3. Complete this method so that it takes in a string of any length
 	//   and returns the full byte array of the decoded base64 characters.
+	
 	public static byte[] base64StringToByteArray(String file) {
-		return null;
+		byte[] result = new byte[(file.length()*3)/4];
+		//result.length = 648
+		byte[] temp = new byte[3];
+		int counter = 0;
+		
+		for (int i = 0; i < result.length; i+= 4) {
+			temp = convert4CharsTo24Bits(file.substring(i, i+4));
+			//java.lang.AssertionError: expected:<0> but was:<-128> 
+			//at index 486
+			//Which seems to be 3/4ths of the length of result
+			
+			if(counter >= 480) {
+				System.out.println(temp[0]);
+				System.out.println(temp[1]);
+				System.out.println(temp[2]);
+			}
+			
+			result[counter++] = temp[0];
+			result[counter++] = temp[1];
+			result[counter++] = temp[2];
+		}
+		
+		return result;
 	}
 }
