@@ -74,16 +74,13 @@ public class Base64Decoder {
 	//   and returns the full byte array of the decoded base64 characters.
 	
 	public static byte[] base64StringToByteArray(String file) {
-		byte[] result = new byte[(file.length()*3)/4];
+		byte[] result = new byte[(file.length()/4)*3];
 		//result.length = 648
 		byte[] temp = new byte[3];
 		int counter = 0;
 		
-		for (int i = 0; i < result.length; i+= 4) {
+		for (int i = 0; i < file.length(); i+= 4) {
 			temp = convert4CharsTo24Bits(file.substring(i, i+4));
-			//java.lang.AssertionError: expected:<0> but was:<-128> 
-			//at index 486
-			//Which seems to be 3/4ths of the length of result
 			
 			if(counter >= 480) {
 				System.out.println(temp[0]);
